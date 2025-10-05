@@ -258,6 +258,7 @@ struct DateTypeButton: View {
         .font(.subheadline)
     }
 }
+
 struct AppleSearchBar: View {
     @Binding var text: String
     
@@ -276,12 +277,8 @@ struct AppleSearchBar: View {
             
             // إذا فاضي = ميكروفون
             if text.isEmpty {
-                Button {
-                    print("Mic tapped")
-                } label: {
-                    Image(systemName: "mic.fill")
-                        .foregroundColor(.gray)
-                }
+               
+                  
             } else {
                 // إذا فيه نص = زر مسح
                 Button {
@@ -306,7 +303,6 @@ struct AppleSearchBar: View {
         .padding(.top, 8)
     }
 }
-
 
 struct ProductCellView: View {
     let product: Product
@@ -390,7 +386,7 @@ struct PAOPickerView: View {
     @Binding var selectedPAO: String
     @State private var workingPAO: String
     
-    let paoOptions = ["6 Months", "12 Months", "18 Months", "24 Months", "36 Months"]
+    let paoOptions = ["2 Months","6 Months", "12 Months", "18 Months", "24 Months", "36 Months"]
     
     init(selectedPAO: Binding<String>) {
         self._selectedPAO = selectedPAO
@@ -467,7 +463,6 @@ struct ExpiryDatePickerView: View {
     }
 }
 
-
 // MARK: - 5. APPLICATION FLOW VIEWS
 
 // 5.1. Tracking Page (Redesigned to match the friend's style)
@@ -522,9 +517,9 @@ struct TrackingSheetView: View {
             
             // --- The Countdown Counters (Styled to match the light theme) ---
             HStack(spacing: 15) {
-                CountdownUnitView(value: logic.months, label: "Months", color: logic.product.statusColor)
-                CountdownUnitView(value: logic.weeks, label: "Weeks", color: logic.product.statusColor)
                 CountdownUnitView(value: logic.days, label: "Days", color: logic.product.statusColor)
+                CountdownUnitView(value: logic.weeks, label: "Weeks", color: logic.product.statusColor)
+                CountdownUnitView(value: logic.months, label: "Months", color: logic.product.statusColor)
             }
             .padding(.horizontal, 20)
             
@@ -569,11 +564,10 @@ struct SplashScreenView: View {
             } else {
                 VStack {
                     // Placeholder icon for the splash screen
-                    Image(systemName: "wand.and.stars")
+                    Image("ss")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 150)
-                        .foregroundColor(accentPink)
+                        .frame(width:250)
                         .shadow(radius: 10)
                 }
             }
@@ -631,27 +625,26 @@ struct HomeView: View {
                 )
                 .ignoresSafeArea()
                 
-                VStack(alignment: .leading, spacing: 0) { // Fix 1: Alignment is set to .leading
-                    Text("Hello Gorgeous,")
-                        .font(.title2)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Hello, Gorgeous!")
+                        .font(.title)
                         .fontWeight(.bold)
                         .foregroundColor(Color(red: 0.3, green: 0.1, blue: 0.2))
                         .padding(.top, 20)
-                        .padding(.leading, 20) // Fix 1: Added leading padding
+                        .padding(.leading, 20)
                         
                     AppleSearchBar(text: $searchText)
 
-                        
                     ScrollView {
                         VStack(spacing: 0) {
                             if productManager.products.isEmpty && searchText.isEmpty {
-                                // Empty state message (Smaller, friendlier, and styled)
+                                // Empty state message
                                 VStack(spacing: 10) {
                                     Image(systemName: "sparkles")
                                         .font(.largeTitle)
                                         .foregroundColor(accentPink.opacity(0.8))
                                     
-                                    Text("It's a clean slate! Tap '+' to get started.") // Friendly text & smaller font
+                                    Text("It's a clean slate! Tap '+' to get started.")
                                         .font(.subheadline)
                                         .fontWeight(.medium)
                                         .foregroundColor(Color(red: 0.3, green: 0.1, blue: 0.2))
@@ -661,7 +654,7 @@ struct HomeView: View {
                                 .background(
                                     RoundedRectangle(cornerRadius: 15)
                                         .fill(Color.white.opacity(0.8))
-                                        .shadow(color: accentPink.opacity(0.2), radius: 5, x: 0, y: 3) // Styled background
+                                        .shadow(color: accentPink.opacity(0.2), radius: 5, x: 0, y: 3)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 15)
                                                 .stroke(accentPink.opacity(0.4), lineWidth: 1)
@@ -669,9 +662,9 @@ struct HomeView: View {
                                 )
                                 .padding(.horizontal, 30)
                                 .padding(.top, 50)
-                                    
+                                
                                 ForEach(0..<3, id: \.self) { _ in
-                                    ShelfView(products: [], isEditing: isEditingMode) { _ in } // Empty tap handler
+                                    ShelfView(products: [], isEditing: isEditingMode) { _ in }
                                 }
                             } else if shelfGroups.isEmpty && !searchText.isEmpty {
                                 Text("No results found for '\(searchText)'")
@@ -680,8 +673,7 @@ struct HomeView: View {
                                 
                             } else {
                                 ForEach(shelfGroups.indices, id: \.self) { index in
-                                    ShelfView(products: shelfGroups[index], isEditing: isEditingMode) { product in // Pass isEditingMode
-                                        // Handle the tap event: Edit Mode vs Tracking Mode
+                                    ShelfView(products: shelfGroups[index], isEditing: isEditingMode) { product in
                                         if isEditingMode {
                                             selectedProductForEditing = product
                                         } else {
@@ -692,7 +684,7 @@ struct HomeView: View {
                                 
                                 if numberOfShelvesToDisplay() < 3 {
                                     ForEach(numberOfShelvesToDisplay()..<3, id: \.self) { _ in
-                                        ShelfView(products: [], isEditing: isEditingMode) { _ in } // Empty tap handler
+                                        ShelfView(products: [], isEditing: isEditingMode) { _ in }
                                     }
                                 }
                             }
@@ -720,41 +712,42 @@ struct HomeView: View {
             // NEW: Edit Button (Always available at the top right)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        withAnimation(.spring()) {
-                            isEditingMode.toggle()
-                            // Close any open tracking sheets if we enter edit mode
-                            selectedProductForTracking = nil
+                    if !productManager.products.isEmpty {
+                        Button {
+                            withAnimation(.spring()) {
+                                isEditingMode.toggle()
+                                selectedProductForTracking = nil
+                            }
+                        } label: {
+                            Text(isEditingMode ? "Done" : "Edit")
+                                .foregroundColor(accentPink)
+                                .font(.headline)
                         }
-                    } label: {
-                        Text(isEditingMode ? "Done" : "Edit")
-                            .foregroundColor(accentPink)
-                            .font(.headline)
                     }
                 }
             }
             // Sheet for Adding a new Product
             .sheet(isPresented: $showingAddProduct) {
-                ProductDetailView(editingProduct: nil) // Pass nil for adding a new product
+                ProductDetailView(editingProduct: nil)
                     .environmentObject(productManager)
             }
             // NEW: Sheet for Editing an existing Product
             .sheet(item: $selectedProductForEditing) { product in
                 ProductDetailView(editingProduct: product)
                     .environmentObject(productManager)
-                    // Ensure editing mode is turned off when editing is complete/sheet is closed
                     .onDisappear {
                         selectedProductForEditing = nil
                         isEditingMode = false
                     }
             }
-            // Sheet for Tracking (Your page - launched when a product is tapped)
+            // Sheet for Tracking
             .sheet(item: $selectedProductForTracking) { product in
                 TrackingSheetView(product: product)
             }
         }
     }
 }
+
 /// Enum يحدد خيارات التاريخ
 enum DateOption: String, CaseIterable {
     case pao = "PAO"
@@ -785,7 +778,6 @@ struct SegmentedDateSelectionView: View {
                                 if selectedDateType == option {
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(accentPink)
-                                        .matchedGeometryEffect(id: "selection", in: Namespace().wrappedValue)
                                 }
                             }
                         )
@@ -800,7 +792,6 @@ struct SegmentedDateSelectionView: View {
         .padding(.vertical, 5)
     }
 }
-
 
 struct ProductDetailView: View {
     @Environment(\.dismiss) var dismiss
@@ -959,7 +950,7 @@ struct ProductDetailView: View {
                     .cornerRadius(8)
             }
             
-            // ✅ شريحة الاختيار الجديدة
+            // شريحة الاختيار الجديدة
             VStack(alignment: .leading, spacing: 10) {
                 Text("Select the expiration type:")
                     .font(.headline)
@@ -1005,7 +996,6 @@ struct ProductDetailView: View {
     }
 }
 
-
 // MARK: - 6. ROOT VIEW & EXTENSIONS
 
 extension Array {
@@ -1016,13 +1006,11 @@ extension Array {
     }
 }
 
-
 struct ContentView: View {
     var body: some View {
         SplashScreenView()
     }
 }
-
 
 #Preview {
     ContentView()
