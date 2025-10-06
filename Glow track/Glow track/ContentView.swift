@@ -423,6 +423,8 @@ struct PAOPickerView: View {
             .buttonStyle(.borderedProminent)
             .tint(accentPink)
             .padding(.bottom, 20)
+            .background(accentPink) // إضافة هذه السطر
+            .foregroundColor(.white) // تغيير لون النص إلى الأبيض
         }
     }
 }
@@ -459,6 +461,8 @@ struct ExpiryDatePickerView: View {
             .buttonStyle(.borderedProminent)
             .tint(accentPink)
             .padding(.bottom, 20)
+            .background(accentPink) // إضافة هذه السطر
+            .foregroundColor(.white) // تغيير لون النص إلى الأبيض
         }
     }
 }
